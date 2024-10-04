@@ -1,0 +1,59 @@
+import { PrismaClient, Prisma } from '@prisma/client';
+import { I{{pascalCase name}}Service } from '@domain/interfaces/services/I{{pascalCase name}}Service';
+import { {{pascalCase name}} } from '@domain/entities/{{pascalCase name}}';
+import { {{pascalCase name}}RequestDTO } from '@interface/dto/request/{{pascalCase name}}RequestDTO';
+
+export class {{pascalCase name}}Service implements I{{pascalCase name}}Service {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async create(data: Partial<{{pascalCase name}}RequestDTO>): Promise<{{pascalCase name}}> {
+    const entity = {{pascalCase name}}.create({
+      name: data.name,
+      // Add other properties as needed
+    });
+    
+    const createdEntity = await this.prisma.{{camelCase name}}.create({
+         data: entity,
+    });
+
+    return {{pascalCase name}}.create(createdEntity);
+  }
+
+  // Implement other methods as needed, e.g., findById, update, delete, etc.
+  
+  async findById(id: number): Promise<{{pascalCase name}} | null> {
+    const model = await this.prisma.{{camelCase name}}.findUnique({
+      where: { id },
+    });
+    return model ? {{pascalCase name}}.create(model) : null;
+  }
+
+  async update(id: number, data: Partial<{{pascalCase name}}RequestDTO>): Promise<{{pascalCase name}}> {
+    const updatedEntity = await this.prisma.{{camelCase name}}.update({
+      where: { id },
+      data: {
+        ...data,
+      },
+    });
+
+    return {{pascalCase name}}.create(updatedEntity);
+  }
+
+  async delete(id: number): Promise<void> {
+       if (!(await this.findById(id))) {
+      throw new Error('{{pascalCase name}} not found');
+    }
+    await this.prisma.{{camelCase name}}.delete({
+      where: { id },
+    });
+  }
+
+   async findAll(): Promise<{{pascalCase name}}[]> {
+    const models = await this.prisma.{{camelCase name}}.findMany();
+    return models.map((model) => {{pascalCase name}}.create(model));
+  }
+}

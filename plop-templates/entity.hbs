@@ -1,0 +1,20 @@
+interface {{pascalCase name}}Props {
+  id?: number | null;
+  name?: string | null;
+}
+
+export class {{pascalCase name}} {
+  readonly id?: number;
+  readonly name?: string | null;
+
+  private constructor(props: {{pascalCase name}}Props) {
+    Object.assign(this, props);
+  }
+
+  static create(data: Partial<{{pascalCase name}}Props>): {{pascalCase name}} {
+    return new {{pascalCase name}}({
+      id: data.id ?? undefined, 
+      name: data.name ?? null,
+    });
+  }
+}

@@ -1,0 +1,76 @@
+import { PrismaClient, Prisma } from '@prisma/client';
+import { {{pascalCase name}} } from '@domain/entities/{{pascalCase name}}';
+import { {{pascalCase name}} as {{pascalCase name}}Model } from '@prisma/client';
+import { IRepository } from '@domain/interfaces/repositories/IRepository';
+
+interface Dependencies {
+  db: PrismaClient;
+}
+
+export class {{pascalCase name}}Repository implements IRepository<{{pascalCase name}}> {
+  private db: PrismaClient;
+
+  constructor({ db }: Dependencies) {
+    this.db = db;
+  }
+
+  async findAll(filter?: Prisma.{{pascalCase name}}WhereInput, orderBy?: Prisma.{{pascalCase name}}OrderByWithRelationInput): Promise<{{pascalCase name}}[]> {
+    const models = await this.db.{{camelCase name}}.findMany({
+      where: filter,
+      orderBy,
+    });
+    return models.map(this.toEntity);
+  }
+
+  async findById(id: number): Promise<{{pascalCase name}} | null> {
+    const model = await this.db.{{camelCase name}}.findUnique({
+      where: { id },
+    });
+    return model ? this.toEntity(model) : null;
+  }
+
+  async create(data: Prisma.{{pascalCase name}}CreateInput): Promise<{{pascalCase name}}> {
+    const model = await this.db.{{camelCase name}}.create({
+      data,
+    });
+    return this.toEntity(model);
+  }
+
+  async update(id: number, data: Prisma.{{pascalCase name}}UpdateInput): Promise<{{pascalCase name}}> {
+    const model = await this.db.{{camelCase name}}.update({
+      where: { id },
+      data,
+    });
+    return this.toEntity(model);
+  }
+
+  async delete(id: number): Promise<{{pascalCase name}}> {
+    const model = await this.db.{{camelCase name}}.delete({
+      where: { id },
+    });
+    return this.toEntity(model);
+  }
+
+  async findWithRelations(id: number, include: Prisma.{{pascalCase name}}Include): Promise<{{pascalCase name}} | null> {
+    const model = await this.db.{{camelCase name}}.findUnique({
+      where: { id },
+      include,
+    });
+    return model ? this.toEntity(model) : null;
+  }
+
+  async findWithFlexibleCriteria(filter: Prisma.{{pascalCase name}}WhereInput, pagination?: { skip?: number; take?: number }, orderBy?: Prisma.{{pascalCase name}}OrderByWithRelationInput, include?: Prisma.{{pascalCase name}}Include): Promise<{{pascalCase name}}[]> {
+    const models = await this.db.{{camelCase name}}.findMany({
+      where: filter,
+      skip: pagination?.skip,
+      take: pagination?.take,
+      orderBy,
+      include,
+    });
+    return models.map(this.toEntity);
+  }
+
+  private toEntity(model: {{pascalCase name}}Model): {{pascalCase name}} {
+    return {{pascalCase name}}.create(model);
+  }
+}

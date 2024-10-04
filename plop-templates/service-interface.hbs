@@ -1,0 +1,11 @@
+import { {{pascalCase name}}RequestDTO } from '@interface/dto/request/{{pascalCase name}}RequestDTO';
+import { {{pascalCase name}} } from '@domain/entities/{{pascalCase name}}';
+
+export interface I{{pascalCase name}}Service {
+  create(data: Partial<{{pascalCase name}}RequestDTO>): Promise<{{pascalCase name}}>;
+  findById(id: number): Promise<{{pascalCase name}} | null>;
+  findAll(): Promise<{{pascalCase name}}[]> ;
+  update(id: number, data: Partial<{{pascalCase name}}RequestDTO>): Promise<{{pascalCase name}}>;
+  delete(id: number): Promise<void>;
+  // Add other methods as needed, such as findAll, count, etc.
+}

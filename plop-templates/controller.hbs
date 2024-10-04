@@ -1,0 +1,59 @@
+import { Request, Response, NextFunction } from 'express';
+import { validate } from 'class-validator';
+import { {{pascalCase name}}RequestDTO } from '@interface/dto/request/{{pascalCase name}}RequestDTO';
+import { {{pascalCase name}}ResponseDTO } from '@interface/dto/response/{{pascalCase name}}ResponseDTO';
+import { {{pascalCase name}}Service } from '@infrastructure/services/{{pascalCase name}}Service';
+
+export class {{pascalCase name}}Controller {
+  private service: {{pascalCase name}}Service;
+
+  constructor(service: {{pascalCase name}}Service) {
+    this.service = service;
+  }
+
+  //* http:post('/:id')
+   
+  async create(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const dto = Object.assign(new {{pascalCase name}}RequestDTO(), req.body);
+    const errors = await validate(dto);
+
+    if (errors.length > 0) {
+      res.status(400).json({ errors });
+      return;
+    }
+
+    const entity = await this.service.create(dto);
+    const responseDto = {{pascalCase name}}ResponseDTO.fromRaw(entity);
+    res.status(201).json(responseDto);
+  }
+
+  //* http:get('/:id')
+
+  async find(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const { id } = req.params;
+    const entity = await this.service.findById(parseInt(id));
+
+    if (!entity) {
+      res.status(404).json({ message: '{{pascalCase name}} not found' });
+      return;
+    }
+
+    const responseDto = {{pascalCase name}}ResponseDTO.fromRaw(entity);
+    res.status(200).json(responseDto);
+  }
+
+  //* http:get('/')
+  
+ 
+  async findAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+    const entities = await this.service.findAll();
+    const responseDtos = entities.map((entity) =>
+      {{pascalCase name}}ResponseDTO.fromRaw(entity)
+    );
+    res.status(200).json({
+      message: "All {{pascalCase name}}s retrieved successfully",
+      result: responseDtos,
+      error: "" // Add if necessary
+    });
+  }
+}

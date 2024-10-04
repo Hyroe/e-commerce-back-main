@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { {{pascalCase name}}Controller } from '@interface/controllers/{{pascalCase name}}Controller';
+import { {{pascalCase name}}Service } from '@infrastructure/services/{{pascalCase name}}Service';
+import { asyncHandler } from '@interface/middleware';
+import { AsyncRequestHandler } from 'src/types/asyncRequestHandler';
+
+const router = Router();
+const service = new {{pascalCase name}}Service();
+const controller = new {{pascalCase name}}Controller(service);
+
+router.get("/", asyncHandler(controller.findAll.bind(controller) as AsyncRequestHandler));
+router.get("/:id", asyncHandler(controller.find.bind(controller) as AsyncRequestHandler));
+router.post("/", asyncHandler(controller.create.bind(controller) as AsyncRequestHandler));
+
+export { router as {{camelCase name}}Routes };
